@@ -12,7 +12,7 @@ class User:
 
     # This is init (instance) method where i write what users need to register and create their accounte
     # name,last_name,passsord,age,balance,phone_number all this is object
-    def __init__(self, name="", last_name="", email="", password="", age=None, balance=0, phone_number=""):
+    def __init__(self, name="", last_name="", email="", password="", age=None, balance=0, phone_number="", personal_number=""):
         self.name = name 
         self.last_name = last_name
         self.email = email
@@ -20,6 +20,7 @@ class User:
         self.age = age
         self.balance = balance
         self.phone_number = phone_number
+        self.personal_number = personal_number
 
     # This function displays the information entered by the user, i.e. personal information.
     def show_personal_info(self):
@@ -31,6 +32,7 @@ class User:
         print(f"Age: {self.age}")
         print(f"Balance: {self.balance}")
         print(f"Phone Number: {self.phone_number}")
+        print(f"Private Number: {self.personal_number}")
 
     # This feature protects against fake age  entered by the user, 
     # meaning the user will not be able to enter anything other than an age.
@@ -42,7 +44,7 @@ class User:
                 return int(age)
             # else print alert message for users.
             else:
-                console.print("You must be 18 or more years old.", style="bold red") #console.print() is same as print() function but
+                console.print("You must be 18 or more years old and less than 70 years old.", style="bold red") #console.print() is same as print() function but
                                                                                      # difference is that console.print() function help us
                                                                                      # to print colored and designed text.
 
@@ -52,7 +54,7 @@ class User:
 
     def valid_email(self):
         while True:
-            email = Prompt.ask("Email: ")
+            email = Prompt.ask("Email")
 
             if email[-10:] == "@gmail.com":  #if email last ten element is equal "@gmail.com" return email 
                 return email
@@ -60,6 +62,19 @@ class User:
             else:
                 console.print("Enter Valid Email", style="bold red") #style property have only Console() funciton and its help us to print()
                                                                      # colored text
+
+                                                                    
+
+    def valid_pesronal_number(self):
+        while True:
+            personal_number = Prompt.ask("Personal Number")
+
+            if len(personal_number) == 11 and personal_number[0:2] == "01":
+                return personal_number
+            else:
+                console.print("Enter Valid Personal Number", style="bold red")
+
+
 
 
     # This feature tell users that she/he must enter start amount to create accounte
@@ -92,7 +107,7 @@ class User:
 
         # while true code must ask users to enter her name is name input is empty code must print alert message else return name.
         while True:
-            name = Prompt.ask("Name: ")
+            name = Prompt.ask("Name")
 
             if not name:
                 console.print("Enter Valid Name", style="bold red")
@@ -119,7 +134,7 @@ class User:
         # while true code ask user to enter their last name and if last name input is empty code will print alert message else code 
         # return last name
         while True:
-            last_name = Prompt.ask("Last Name: ")
+            last_name = Prompt.ask("Last Name")
 
             if not last_name:
                 console.print("Enter valid Last Name: ", style="bold red")
@@ -140,6 +155,9 @@ class User:
 
     # This function create accounte by users information.
     def create_account(self):
+
+        console.print("Create Your Accounte.",style="bold")
+        print()
         # if name object is empty name object will equal to valid_name() whats mean we call valid_name_funciton 
         # to sign up our name fucntion thats why in every function i write return
         if not self.name:
@@ -164,14 +182,20 @@ class User:
         # to sign up our valid_phone_number.
         if not self.phone_number:
             self.phone_number = self.valid_phone_number()
+
+         # if personal number object is empty code will call valid personal number function.
+        if not self.personal_number:
+            self.personal_number = self.valid_pesronal_number()
+
         # if email object is empty balance object will equal to get_balance() function whats mean we code call function get_balance()
         # to sign up our balance.
         if not self.balance:
             self.balance = self.get_balance()
 
+
         # if none of them is empty code will print message that tell users they create accounte saccessfuly and code will return all object, 
         # else code print alert message .
-        if all([self.name, self.last_name, self.email, self.age, self.password, self.phone_number, self.balance]):
+        if all([self.name, self.last_name, self.email, self.age, self.password, self.phone_number, self.balance, self.personal_number]):
             console.print("Account successfully created.", style="bold green")
         else:
             console.print("There was an error creating the account.", style="bold red")
@@ -185,7 +209,7 @@ class Bankaccount:
 
     # This is init (instance) method where is only balance parametr and created only balance object beacouse.
     # deposite and withdraw methods need only balance object and i write this code to get balance object from User class.
-    def __init__(self,balance,):
+    def __init__(self,balance):
         self.balance = balance
 
 
@@ -296,7 +320,10 @@ class Start(User):
             if account == "yes" and len(self.users) == 0:
                 console.print("You don't have an account. Please create one.", style="bold red")
             # if answer is "yes" and users length is gerater than 1 or equal to 1 code will ask users their email and password.
+            
             elif account == "yes" and len(self.users) >= 1:
+                console.print("Log In to Your Accounte.", style="bold")
+                print()
                 email = self.empty("Enter your email: ")
                 password = self.empty("Enter your password: ")
 
@@ -307,7 +334,8 @@ class Start(User):
                 # if user (login function) is not empty code will print that user login saccssefuly to their accounte.
                 if user:
                     console.print("You Login successfully", style="bold green")
-                    bank = self.bank[0] # This is bank list and i left behined first index
+                    bank = self.bank[0]
+                    # This is bank list and i left behined first index
                     # while true code will print all valid option dragon bank can do for users
                     while True:
                         # i use Panel function from rich libary to design main menu
@@ -319,12 +347,12 @@ class Start(User):
 [bold yellow]4)[/bold yellow] Show balance.
 [bold yellow]5)[/bold yellow] Delete Account.
 [bold yellow]6)[/bold yellow] Search Account Information.
-[bold yellow]7)[/bold yellow] See users of our bank.
+[bold yellow]7)[/bold yellow] View all your created accounts.
 [bold yellow]8)[/bold yellow] Change account.
 [bold yellow]9)[/bold yellow] Exit.
 """                     # this is title design of border
                         console.print(Panel(menu, title="[bold green]Main Menu[/bold green]", border_style="magenta")) 
-                        help_option = input("Type Number: 1/6. ")
+                        help_option = input("Type Number: 1/9. ")
                         print("*********************************************")
 
                         # i use if else condition to call every funciton from entire code by users desire.
@@ -352,7 +380,7 @@ class Start(User):
                             # is user enter number "7 code will print every users name and last name."
                             print("Users of the bank:")
                             for i in self.users:
-                                print(f"Name: {i.name}, Last Name: {i.last_name}")
+                                print(f"Name: {i.name}, Email: {i.email}")
                         elif help_option == "8":
                             # if user enter number "8" code will help to user change hes accounte.
                             change = input("Do You Want change account? (yes/no): ")
